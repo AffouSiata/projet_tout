@@ -10,19 +10,21 @@ const { promiseImpl, resolveInclude } = require('ejs');
 const utilisateurs = class{
     static sel = ()=>
     {
-        
-        connect.query('SELECT * FROM membres', function(error,resultat){
-               
-            if(error){
-                console.log(error);
-                reject(error)
-                  
-            }
-            else{
-                resolve(resultat)  
-            }
-            
+        return new Promise((resolve,reject)=>{
+            connection.query(`SELECT * FROM membres`, function(error,resultat){
+               console.log("qsdfghjklm",resultat);
+                if(error){
+                    console.log(error);
+                    reject(error)
+                      
+                }
+                else{
+                    resolve(resultat)  
+                }
+                
+            })
         })
+        
     }
 
 
@@ -40,6 +42,39 @@ const utilisateurs = class{
             }
         })
 
+    }
+
+    static connect =(data)=>{
+        return new Promise((resolve,reject)=>{
+            let{email,password} =data
+            console.log("reponvtyh",data);
+            connection.query('SELECT * FROM membres  WHERE email= ? and password=?',[email,password],function(error,resultat){
+
+                if(error){
+                    reject(error)
+                    
+                }
+                else{
+                    resolve(resultat)
+                }
+        })
+        })
+        
+
+    }
+
+
+    static supprime =(req)=>{
+        const id =req.params.id
+        connection.query("DELETE FROM membres WHERE id=? ",[id],(error,resultat)=>{
+            if(error){
+                return error;
+
+            }
+            else{
+                return resultat
+            }
+        })
     }
     
 }

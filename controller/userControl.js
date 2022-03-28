@@ -1,7 +1,8 @@
 const express = require('express');
-// const  connection  = require('../database/connexion');
 const router =  express.Router();
 const { request,response } = require("express");
+const { validationResult } = require('express-validator');
+const connection = require('../database/connexion');
 const utilisateurs = require('../requete/requet');
 
 
@@ -10,34 +11,69 @@ const utilisateurs = require('../requete/requet');
 
 const mycontrolle = class{
 
-    static mapageA =(req=request,res=response)=>{
-        res.render('../views/index')
-    }
-    static mapageB =(req=request,res=response)=>{
-        res.render('../views/affichage')
-    }
+
+
     static affichageConnexionGet = (req=request,res=response)=>{
         res.render('../views/conn')
     }
-    static affichageInscriptionGet =(req=request,res=response)=>{
-        res.render('../views/Inscription')
+    static affichageConnexionPost = (req=request,res=response)=>{
+        console.log("ma chance",req.body);
+        utilisateurs.connect(req.body).then(success=>{
+            console.log('sfdtsghd',success);
+            res.redirect('/affichage')
+        })
+        .catch(error=>{
+            res.redirect('/error404')
+        })
+            
+
+            
+
     }
+
+    static affichageInscriptionGet =(req=request,res=response)=>{
+        res.render('../views/Inscription',{alert:null})
+    }
+    
+    static mapageAccueil =(req=request,res=response)=>{
+        res.render('../views/index')
+    }
+
     static affichageInscriptionPost =(req = request, res = response)=>{
-        console.log(req.body);
-        res.redirect('/affichage')
-        utilisateurs.insertion(req.body)
+        const erreurs = validationResult(req)
+        if(!erreurs.isEmpty()){
+            const alert =erreurs.mapped()
+            console.log('erreur',alert)
+            res.render('Inscription',{
+                alert:alert
+            })
+        }
+        else{
+            
+            console.log(req.body);
+            utilisateurs.insertion(req.body)
+                
+                res.redirect('/affichage')
+
+            
+        }
+        
      
     }
     static selection =(req=request,res=response)=>{
-        
-            data.sel().then(resultat =>{
-                res.render('affichage',{resultat:resultat})
+       
+        utilisateurs.sel().then(resultat =>{
+            res.render('../views/affichage',{resultat:resultat})
             })
             .catch(error =>{
               res.redirect('/error404')
 
             })
     }
+   static suppression = (req=request,res=response)=>{
+       utilisateurs.supprime(req)
+       res.redirect('/affichage')
+   }
         
     
 }

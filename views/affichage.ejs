@@ -31,20 +31,26 @@
             </tr>
           </thead>
           <tbody>
+           
+                <% if (resultat) { %>
 
-           
-            <tr> 
-                <th scope="row">1</th>
-                <td>Affou</td>
-                <td>siata</td>
-                <td>email</td>
-                <td>*****</td>
-                <td>
-                    <a href="" class="btn btn-info btn-small" >Modifier</a> 
-                    <a href="" onclick="return confirmation()" class="btn btn-danger btn-small">Supprimer  </a> 
-                 </td>
-           </tr>
-           
+                    <% for(let i=0 ;i < resultat.length; i++){ %>
+
+
+                        <tr> 
+                            <th scope="row"><%= resultat[i].id %></th>
+                            <td><%= resultat[i].nom %></td>
+                            <td><%= resultat[i].prenom %></td>
+                            <td><%= resultat[i].email %></td>
+                            <td><%= resultat[i].password %></td>
+                            <td>
+                                <a href="" class="btn btn-info btn-small" >Modifier</a> 
+                                <a href="/delete/<%= resultat[i].id %>" onclick="return confirmation()" class="btn btn-danger btn-small">Supprimer  </a> 
+                             </td>
+                       </tr>
+
+                    <% } %>
+                <% } %>
           </tbody>
     </table>
     

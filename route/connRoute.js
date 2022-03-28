@@ -6,8 +6,14 @@ const connection = require('../database/connexion')
 
 
 router.get('/',mycontrolle.affichageConnexionGet)
+router.post('/',mycontrolle.affichageConnexionPost)
 
-router.get('/index',mycontrolle.mapageA)
-router.get('/affichage',mycontrolle.mapageB)
+router.get('/index',mycontrolle.mapageAccueil)
+router.get('/affichage',mycontrolle.selection)
+
+router.get('/delete/:id', mycontrolle.suppression);
+
+
+
    
 module.exports=router;
