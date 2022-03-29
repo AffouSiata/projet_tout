@@ -11,6 +11,15 @@ const bdd = require('./database/connexion')
         }
         else{
             console.log("Connexion reussie");
+
+
+            app.use(session({
+                secret:'keyboard cat',
+                resave:false,
+                saveUninitialized:true,
+                cookie:{maxAge:6000000000}
+            }))
+            
             app.use(express.json())
             app.use(express.urlencoded({extended:true}))
 

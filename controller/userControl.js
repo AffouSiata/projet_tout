@@ -14,11 +14,19 @@ const mycontrolle = class{
 
 
     static affichageConnexionGet = (req=request,res=response)=>{
+        if(req.session.utilisateur){
+            return res.redirect('/affichage')
+        }
         res.render('../views/conn')
     }
     static affichageConnexionPost = (req=request,res=response)=>{
         console.log("ma chance",req.body);
         utilisateurs.connect(req.body).then(success=>{
+            let sesion ={
+                email:req.body.email,
+                password:req.body.password
+            }
+            req.session.utilisateur=session
             console.log('sfdtsghd',success);
             res.redirect('/affichage')
         })
@@ -32,6 +40,7 @@ const mycontrolle = class{
     }
 
     static affichageInscriptionGet =(req=request,res=response)=>{
+        
         res.render('../views/Inscription',{alert:null})
     }
     
@@ -61,7 +70,7 @@ const mycontrolle = class{
      
     }
     static selection =(req=request,res=response)=>{
-       
+       if(req.session.utilisateur){
         utilisateurs.sel().then(resultat =>{
             res.render('../views/affichage',{resultat:resultat})
             })
@@ -69,6 +78,11 @@ const mycontrolle = class{
               res.redirect('/error404')
 
             })
+       }
+       else{
+           res.redirect('/conn')
+       }
+       
     }
    static suppression = (req=request,res=response)=>{
        utilisateurs.supprime(req)
