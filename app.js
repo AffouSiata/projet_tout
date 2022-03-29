@@ -2,6 +2,7 @@ const express =require('express')
 const app = express()
 const inscrip = require('./route/InscriptionRoute')
 const router = require('./route/connRoute')
+const  session  =  require ( 'express-session' );
 const bdd = require('./database/connexion')
 
 
@@ -16,8 +17,8 @@ const bdd = require('./database/connexion')
             app.use(session({
                 secret:'keyboard cat',
                 resave:false,
-                saveUninitialized:true,
-                cookie:{maxAge:6000000000}
+                saveUninitialized: true,
+                cookie:{maxAge:60000000}
             }))
             
             app.use(express.json())

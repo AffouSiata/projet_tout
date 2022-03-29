@@ -19,6 +19,9 @@
         <h1>Inscrivez-vous </h1>
 
         <form method="post" >
+            <% if(alert) {%>
+                <p><%= alert.message %></p>
+           <% } %>
            
             <div class="mb-3 row">
                 <!-- <label for="inputnom" class="col-sm-2 col-form-label">Nom :</label> -->

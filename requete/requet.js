@@ -12,7 +12,7 @@ const utilisateurs = class{
     {
         return new Promise((resolve,reject)=>{
             connection.query(`SELECT * FROM membres`, function(error,resultat){
-               console.log("qsdfghjklm",resultat);
+            //    console.log("qsdfghjklm",resultat);
                 if(error){
                     console.log(error);
                     reject(error)
@@ -32,15 +32,30 @@ const utilisateurs = class{
     static insertion = (data)=>{
         let {nom, prenom, email, password} = data;
         let inserer = "INSERT INTO membres(nom,prenom,email,password)VALUES(?,?,?,?);";
+        let verifie ="SELECT * FROM membres WHERE email=? and password =?";
 
-        connection.query(inserer,[nom,prenom,email,password],(error,resultat)=>{
-            if(error){
-                console.log("erreur",error);
-            }
-            else{
-                console.log("bien enregistré",resultat);
-            }
+        return new Promise((resolve,reject)=>{
+            connection.query(verifie,[email,password],function(error,resultat){
+                if(resultat ==""){
+                    connection.query(inserer,[nom,prenom,email,password],(error,resultat)=>{
+                        if(error){
+                           reject(error);
+                        }
+                        else{
+                           resolve(resultat);
+                        }
+                    })
+                }
+                else{
+                  reject({message:"email exist déja"});
+                }
+                
+                
+            })
         })
+        
+
+        
 
     }
 
@@ -48,13 +63,14 @@ const utilisateurs = class{
         return new Promise((resolve,reject)=>{
             let{email,password} =data
             console.log("reponvtyh",data);
-            connection.query('SELECT * FROM membres  WHERE email= ? and password=?',[email,password],function(error,resultat){
+            connection.query('SELECT * FROM membres  WHERE email= ?',[email],function(error,resultat){
 
                 if(error){
                     reject(error)
                     
                 }
                 else{
+                    console.log("azertyuyutre",resultat);
                     resolve(resultat)
                 }
         })
@@ -76,6 +92,7 @@ const utilisateurs = class{
             }
         })
     }
+    
     
 }
 module.exports = utilisateurs;

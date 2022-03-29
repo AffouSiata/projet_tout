@@ -11,4 +11,4 @@ router.post('/',valida,mycontrolle. affichageInscriptionPost)
 
 
 
-module.exports=router
+module.exports=router;

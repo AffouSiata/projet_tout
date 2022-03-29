@@ -4,6 +4,9 @@ const { request,response } = require("express");
 const { validationResult } = require('express-validator');
 const connection = require('../database/connexion');
 const utilisateurs = require('../requete/requet');
+var bcrypt = require('bcryptjs');
+const mytoken = require('../requete/token');
+
 
 
 
@@ -17,21 +20,34 @@ const mycontrolle = class{
         if(req.session.utilisateur){
             return res.redirect('/affichage')
         }
-        res.render('../views/conn')
+        res.render('../views/conn',{alert:null})
     }
+
     static affichageConnexionPost = (req=request,res=response)=>{
-        console.log("ma chance",req.body);
+       
+       
         utilisateurs.connect(req.body).then(success=>{
-            let sesion ={
+            let recuperer = req.body.password 
+            let comparaison = bcrypt.compareSync(recuperer,success[0].password);
+            // console.log("azertyuiopmlkqwxcvbn",comparaison); 
+            if(comparaison){
+                res.redirect("/affichage")
+            }
+            else{
+                console.log("vvvvvvvvvvv")
+                res.render('conn',{alert:"le mot passe incorrect"})
+            }
+            // console.log("azertyuishdgsdjsdjb",success);
+            let session ={
                 email:req.body.email,
                 password:req.body.password
             }
-            req.session.utilisateur=session
-            console.log('sfdtsghd',success);
-            res.redirect('/affichage')
+            req.session.utilisateur = session
+            // console.log('ma session connecté',req.session.utilisateur);
         })
         .catch(error=>{
             res.redirect('/error404')
+            console.log("erreur de session",error);
         })
             
 
@@ -59,18 +75,29 @@ const mycontrolle = class{
         }
         else{
             
-            console.log(req.body);
-            utilisateurs.insertion(req.body)
+
+            var hash = bcrypt.hashSync(req.body.password, 10);
+            console.log(hash);
+            let user={
+                "nom":req.body.nom,
+                "prenom":req.body.prenom,
+                "email":req.body.email,
+                "password": hash,
+            }
+            
+            // console.log(user);
+            utilisateurs.insertion(user)
                 
                 res.redirect('/affichage')
 
+               
             
         }
         
      
     }
     static selection =(req=request,res=response)=>{
-       if(req.session.utilisateur){
+    //    if(req.session.utilisateur){
         utilisateurs.sel().then(resultat =>{
             res.render('../views/affichage',{resultat:resultat})
             })
@@ -78,12 +105,16 @@ const mycontrolle = class{
               res.redirect('/error404')
 
             })
-       }
-       else{
-           res.redirect('/conn')
-       }
-       
+    //    }
+    //    else{
+    //        res.redirect('/affichage')
+    //    }
+      
     }
+
+
+
+
    static suppression = (req=request,res=response)=>{
        utilisateurs.supprime(req)
        res.redirect('/affichage')

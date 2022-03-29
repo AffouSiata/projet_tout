@@ -10,7 +10,9 @@
 </head>
 <body>
   <form method="post">
-     
+    <% if(alert) {%>
+      <p style="color: red;"><%= alert %></p>
+  <% } %>
     <h1>Se connecter</h1>
     <div class="social-media">
       <p><i class="fab fa-google"></i></p>
