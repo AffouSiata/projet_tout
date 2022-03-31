@@ -7,7 +7,8 @@ const connection = require('../database/connexion')
 
 
 router.get('/',mycontrolle.affichageInscriptionGet)
-router.post('/',valida,mycontrolle. affichageInscriptionPost)
+router.post('/',valida,mycontrolle.affichageInscriptionPost)
+
 
 
 

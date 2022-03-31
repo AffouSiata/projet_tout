@@ -61,7 +61,7 @@ const utilisateurs = class{
 
     static connect =(data)=>{
         return new Promise((resolve,reject)=>{
-            let{email,password} =data
+            let{email} =data
             console.log("reponvtyh",data);
             connection.query('SELECT * FROM membres  WHERE email= ?',[email],function(error,resultat){
 

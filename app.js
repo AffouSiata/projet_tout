@@ -3,7 +3,8 @@ const app = express()
 const inscrip = require('./route/InscriptionRoute')
 const router = require('./route/connRoute')
 const  session  =  require ( 'express-session' );
-const bdd = require('./database/connexion')
+const bdd = require('./database/connexion');
+const res = require('express/lib/response');
 
 
     bdd.connect((error)=>{
@@ -32,6 +33,10 @@ const bdd = require('./database/connexion')
             app.use('/',router)
             app.use('/Inscription',inscrip)
 
+
+            app.get('/mm',(req,res)=>{
+                res.send('ekdlhelilekmrmed')
+            })
 
         }
         

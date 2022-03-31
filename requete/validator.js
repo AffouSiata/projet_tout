@@ -15,5 +15,5 @@ exports.valida =[
 
 
     check('email').normalizeEmail().isEmail(),
-    check('password').isLength({ min: 6 }).withMessage('le password doit contenir au moins 6 caracteres')
+    check('password').isLength({ min: 4 }).withMessage('le password doit contenir au moins 6 caracteres')
 ]

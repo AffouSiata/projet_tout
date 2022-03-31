@@ -6,6 +6,7 @@ const connection = require('../database/connexion');
 const utilisateurs = require('../requete/requet');
 var bcrypt = require('bcryptjs');
 const mytoken = require('../requete/token');
+const enoiemail = require('../requete/mailer');
 
 
 
@@ -17,10 +18,10 @@ const mycontrolle = class{
 
 
     static affichageConnexionGet = (req=request,res=response)=>{
-        if(req.session.utilisateur){
-            return res.redirect('/affichage')
-        }
-        res.render('../views/conn',{alert:null})
+        // if(req.session.utilisateur){
+        //     return res.redirect('/affichage')
+        // }
+        res.render('conn',{alert:null})
     }
 
     static affichageConnexionPost = (req=request,res=response)=>{
@@ -28,15 +29,20 @@ const mycontrolle = class{
        
         utilisateurs.connect(req.body).then(success=>{
             let recuperer = req.body.password 
-            let comparaison = bcrypt.compareSync(recuperer,success[0].password);
+            
+            // cryptage de mot passe//
+            
+            // let comparaison = bcrypt.compareSync(recuperer,success[0].password);
             // console.log("azertyuiopmlkqwxcvbn",comparaison); 
-            if(comparaison){
+            // if(comparaison){
+
                 res.redirect("/affichage")
-            }
-            else{
-                console.log("vvvvvvvvvvv")
-                res.render('conn',{alert:"le mot passe incorrect"})
-            }
+
+            // } else{
+            //     console.log("vvvvvvvvvvv")
+            //     res.render('conn',{alert:"le mot passe incorrect"})
+            // }
+
             // console.log("azertyuishdgsdjsdjb",success);
             let session ={
                 email:req.body.email,
@@ -49,7 +55,7 @@ const mycontrolle = class{
             res.redirect('/error404')
             console.log("erreur de session",error);
         })
-            
+             
 
             
 
@@ -57,12 +63,12 @@ const mycontrolle = class{
 
     static affichageInscriptionGet =(req=request,res=response)=>{
         
-        res.render('../views/Inscription',{alert:null})
+        res.render('Inscription',{alert:null})
     }
     
-    static mapageAccueil =(req=request,res=response)=>{
-        res.render('../views/index')
-    }
+    // static mapageAccueil =(req=request,res=response)=>{
+    //     res.render('../views/index')
+    // }
 
     static affichageInscriptionPost =(req = request, res = response)=>{
         const erreurs = validationResult(req)
@@ -74,21 +80,19 @@ const mycontrolle = class{
             })
         }
         else{
-            
-
-            var hash = bcrypt.hashSync(req.body.password, 10);
-            console.log(hash);
-            let user={
-                "nom":req.body.nom,
-                "prenom":req.body.prenom,
-                "email":req.body.email,
-                "password": hash,
-            }
-            
-            // console.log(user);
-            utilisateurs.insertion(user)
-                
+            utilisateurs.insertion(req.body).then( success =>{
+                const autoken = mytoken.creatoken(req.body);
+                // const veri=   mytoken.verifietoken(autoken);
+                const envoiemail = enoiemail(req.body.email,autoken)
                 res.redirect('/affichage')
+            })
+            .catch(error=>{
+                res.render('Inscription', {alert:error})
+                console.log(error);
+            })
+                
+            
+        
 
                
             
@@ -118,6 +122,11 @@ const mycontrolle = class{
    static suppression = (req=request,res=response)=>{
        utilisateurs.supprime(req)
        res.redirect('/affichage')
+   }
+    static envoieto = (req=request,res=response)=>{
+       const mail = req.params.id
+        console.log("srtyuyr",mail);
+      res.redirect('/')
    }
         
     
