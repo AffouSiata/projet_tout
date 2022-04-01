@@ -13,6 +13,7 @@ function mailenvoie (envoiemail,token) {
             pass: 'Afsa2000#'
         }
     });
+    console.log("ttttttttt",token);
     let lien = `http://localhost:2000/token/${token}`
 
     let info =  {

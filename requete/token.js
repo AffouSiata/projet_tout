@@ -23,10 +23,13 @@ const mytoken = class{
         console.log("gdshwdhhsw",token);
         try{
             const verification =   jwt.verify(token, "anNvbnRva2Vu") 
-            console.log("token verifie",verification);  
+            console.log("token verifie",verification); 
+            return {success:verification}; 
+
         }
         catch {
             console.log("token invalid")
+            return{error:"token invalid"}
         }
     }
 

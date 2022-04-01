@@ -30,39 +30,27 @@ const utilisateurs = class{
 
 
     static insertion = (data)=>{
-        let {nom, prenom, email, password} = data;
+         let {nom, prenom, email, password} = data.success;
+         console.log("mmmmmmm",data);
+         console.log("nnnnnnnn",data.success.nom);
         let inserer = "INSERT INTO membres(nom,prenom,email,password)VALUES(?,?,?,?);";
-        let verifie ="SELECT * FROM membres WHERE email=? and password =?";
+        // let verifie ="SELECT * FROM membres WHERE email=? and password =?";
 
-        return new Promise((resolve,reject)=>{
-            connection.query(verifie,[email,password],function(error,resultat){
-                if(resultat ==""){
-                    connection.query(inserer,[nom,prenom,email,password],(error,resultat)=>{
-                        if(error){
-                           reject(error);
-                        }
-                        else{
-                           resolve(resultat);
-                        }
-                    })
+            connection.query(inserer,[nom,prenom,email,password],(error,resultat)=>{
+                if(error){
+                     console.log(error)
                 }
                 else{
-                  reject({message:"email exist déja"});
+                     console.log(resultat);
                 }
-                
-                
             })
-        })
         
-
         
-
     }
 
     static connect =(data)=>{
         return new Promise((resolve,reject)=>{
             let{email} =data
-            console.log("reponvtyh",data);
             connection.query('SELECT * FROM membres  WHERE email= ?',[email],function(error,resultat){
 
                 if(error){
@@ -91,6 +79,26 @@ const utilisateurs = class{
                 return resultat
             }
         })
+    }
+    static verifiemonmail =(req)=>{
+        console.log("rrrrrrrrrrr",req);
+   
+        return new Promise((resolve,reject)=>{
+            let verifie ="SELECT * FROM membres WHERE email=?";
+            connection.query(verifie,[req],(error,resultats)=>{
+                console.log("mlkjhgfd",resultats);
+                if(resultats == ''){
+                    
+                    resolve({message:' inscription reussie '})
+                    
+                }
+                else{
+                    reject({message:"email exist déja"}) ;
+                }
+            })
+            
+        })
+       
     }
     
     

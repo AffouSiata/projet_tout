@@ -19,7 +19,7 @@ const mycontrolle = class{
 
     static affichageConnexionGet = (req=request,res=response)=>{
         // if(req.session.utilisateur){
-        //     return res.redirect('/affichage')
+            return res.redirect('/affichage')
         // }
         res.render('conn',{alert:null})
     }
@@ -32,16 +32,16 @@ const mycontrolle = class{
             
             // cryptage de mot passe//
             
-            // let comparaison = bcrypt.compareSync(recuperer,success[0].password);
-            // console.log("azertyuiopmlkqwxcvbn",comparaison); 
-            // if(comparaison){
+            let comparaison = bcrypt.compareSync(recuperer,success[0].password);
+            console.log("azertyuiopmlkqwxcvbn",comparaison); 
+            if(comparaison){
 
                 res.redirect("/affichage")
 
-            // } else{
-            //     console.log("vvvvvvvvvvv")
-            //     res.render('conn',{alert:"le mot passe incorrect"})
-            // }
+            } else{
+                console.log("vvvvvvvvvvv")
+                res.render('conn',{alert:"le mot passe incorrect"})
+            }
 
             // console.log("azertyuishdgsdjsdjb",success);
             let session ={
@@ -54,10 +54,7 @@ const mycontrolle = class{
         .catch(error=>{
             res.redirect('/error404')
             console.log("erreur de session",error);
-        })
-             
-
-            
+        })   
 
     }
 
@@ -66,42 +63,38 @@ const mycontrolle = class{
         res.render('Inscription',{alert:null})
     }
     
-    // static mapageAccueil =(req=request,res=response)=>{
-    //     res.render('../views/index')
-    // }
+    
 
     static affichageInscriptionPost =(req = request, res = response)=>{
         const erreurs = validationResult(req)
         if(!erreurs.isEmpty()){
             const alert =erreurs.mapped()
-            console.log('erreur',alert)
+            // console.log('erreur',alert)
             res.render('Inscription',{
                 alert:alert
             })
         }
         else{
-            utilisateurs.insertion(req.body).then( success =>{
+            utilisateurs. verifiemonmail(req.body.email).then(resultats=>{
                 const autoken = mytoken.creatoken(req.body);
-                // const veri=   mytoken.verifietoken(autoken);
                 const envoiemail = enoiemail(req.body.email,autoken)
                 res.redirect('/affichage')
             })
             .catch(error=>{
-                res.render('Inscription', {alert:error})
-                console.log(error);
+                res.render('Inscription',{alert:error})
+                console.log("dfghjklm",error);
             })
-                
-            
         
-
                
             
         }
+      
+
         
      
     }
     static selection =(req=request,res=response)=>{
-    //    if(req.session.utilisateur){
+       if(req.session.utilisateur){
         utilisateurs.sel().then(resultat =>{
             res.render('../views/affichage',{resultat:resultat})
             })
@@ -109,10 +102,10 @@ const mycontrolle = class{
               res.redirect('/error404')
 
             })
-    //    }
-    //    else{
-    //        res.redirect('/affichage')
-    //    }
+       }
+       else{
+           res.redirect('/affichage')
+       }
       
     }
 
@@ -123,11 +116,28 @@ const mycontrolle = class{
        utilisateurs.supprime(req)
        res.redirect('/affichage')
    }
+
+
+
     static envoieto = (req=request,res=response)=>{
        const mail = req.params.id
-        console.log("srtyuyr",mail);
-      res.redirect('/')
+       console.log("xxxxxxxxxxx",mail);
+       const veri = mytoken.verifietoken(mail);
+       if(veri.success){
+        utilisateurs.insertion(veri)
+        res.redirect('/')
+       }
+       else{
+           res.redirect('/Inscription')
+       }
+       console.log("aaaaaaaaaaa",veri);
+     
    }
+
+
+   // static mapageAccueil =(req=request,res=response)=>{
+    //     res.render('../views/index')
+    // }
         
     
 }
